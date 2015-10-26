@@ -38,6 +38,7 @@ rebase_upstream()
 
 fetch_upstream()
 {
+    echo "Fetching from upstream..."
     if git fetch -q upstream; then
         printf "Status Fetching: ${GREEN}Berhasil${NC} \n"
         rebase_upstream
@@ -52,9 +53,8 @@ clear
 # LOOP THROUGH REPO
 for repo in */; do
     repo=${repo%*/}
-    printf "Processing Repo: ${BLUE}$repo${NC} \n"
-    echo "Fetching from upstream..."
     cd $repo
+    printf "Processing Repo: ${BLUE}$repo${NC} \n"
     fetch_upstream
     echo
     echo
