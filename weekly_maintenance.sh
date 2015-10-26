@@ -23,7 +23,7 @@ for repo in */; do
     repo=${repo%*/}
     printf "Processing Repo: ${BLUE}$repo${NC} \n"
     echo "Fetching from upstream..."
-    cd $D
+    cd $repo
     git fetch -q upstream
     if [ $? == 0 ]; then
         printf "Status Fetching: ${GREEN}Berhasil${NC} \n"
