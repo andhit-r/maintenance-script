@@ -15,6 +15,37 @@ GREEN="\033[0;32m"
 BLUE="\033[0;34m"
 NC="\033[0m"
 
+push_origin()
+{
+    echo "Pushing to origin..."
+    if git push origin 8.0:8.0; then
+        printf "Status Push: ${GREEN}Berhasil${NC} \n"
+    else
+        printf "Status Push: ${RED}Gagal${NC}. Exit code: ${RED}$?${NC} \n"
+    fi
+}
+
+rebase_upstream()
+{
+    echo "Rebasing..."
+    if git rebase upstream/8.0; then
+        printf "Status Rebasing: ${GREEN}Berhasil${NC} \n"
+        push_origin
+    else
+        printf "Status Rebasing: ${RED}Gagal${NC}. Exit code: ${RED}$?${NC} \n"
+    fi
+}
+
+fetch_upstream()
+{
+    if git fetch -q upstream; then
+        printf "Status Fetching: ${GREEN}Berhasil${NC} \n"
+        rebase_upstream
+    else
+        printf "Status Fetching: ${RED}Gagal${NC}. Exit code: ${RED}$?${NC} \n"
+    fi
+}
+
 # CLEAR SCREEN
 clear
 
@@ -24,26 +55,7 @@ for repo in */; do
     printf "Processing Repo: ${BLUE}$repo${NC} \n"
     echo "Fetching from upstream..."
     cd $repo
-    git fetch -q upstream
-    if [ $? == 0 ]; then
-        printf "Status Fetching: ${GREEN}Berhasil${NC} \n"
-        echo "Rebasing..."
-        git rebase upstream/8.0
-        if [ $? == 0 ]; then
-            printf "Status Rebasing: ${GREEN}Berhasil${NC} \n"
-            echo "Pushing to origin..."
-            git push origin 8.0:8.0
-            if [ $? == 0 ]; then
-                printf "Status Push: ${GREEN}Berhasil${NC} \n"
-            else
-                printf "Status Push: ${RED}Gagal${NC}. Exit code: ${RED}$?${NC} \n"
-            fi
-        else
-            printf "Status Rebasing: ${RED}Gagal${NC}. Exit code: ${RED}$?${NC} \n"
-        fi
-    else
-        printf "Status Fetching: ${RED}Gagal${NC}. Exit code: ${RED}$?${NC} \n"
-    fi
+    fetch_upstream
     echo
     echo
     cd ..
